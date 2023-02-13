@@ -1,8 +1,8 @@
 const express = require('express');
 const crouter = express.Router();
-const getCrd = require('../controllers/crd');
+const {getCrd,updateCrd} = require('../controllers/crd');
 crouter.route('/').get(getCrd);
-// crouter.route('/').get(post_crd);
+crouter.route('/').patch(updateCrd);
 
 
 

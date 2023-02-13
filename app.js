@@ -25,7 +25,7 @@ const fetch_routes = require('./routes/fetch');
 app.use('/mrd.html',mrd_routes);
 app.use('/rd.html', rd_routes);
 app.use('/fetch',fetch_routes);
-app.use('/crd.html',crd_routes);
+app.use('/crd',crd_routes);
 
 
 app.listen(3000);

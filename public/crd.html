@@ -18,7 +18,8 @@
 
         </select>
         <button id="fetch-button">Fetch Data</button>
-        <div id="data-container"></div>
+        <table id="data-container"></table>
+
     </div>
 
 </body>
@@ -28,16 +29,67 @@
     const dataContainer = document.getElementById('data-container');
     fetchButton.addEventListener('click', () => {
         const field = fieldSelect.value;
-        console.log(field);
-        fetch(`http://localhost:3000/crd.html?Event=${field}`)
+        fetch(`/crd?Event=${field}`)
             .then(res => res.json()).then(data => {
-                let dataHTML = ''
-                data.forEach(function (item) {
-                    dataHTML += `${item[field]}` 
-                    console.log(dataHTML)
+                console.log(data);
+                let table = `<table>
+                <thead>
+                    <tr>
+                        <th>TID</th>
+                        <th>played</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>`;
+                data.forEach(item => {
+                    table += `<tr>
+                    <td>${item._id}</td>
+                    <td>${item.played}</td>
+                    <td><input type="checkbox" id="update" data-id="${item._id}" data-played="${item.played}"/></td>
+                    </tr>`;
                 });
+                table += `</tbody>
+            </table>`;
+                dataContainer.innerHTML = table;
+                const update = document.querySelectorAll('input[type="checkbox"][id="update"]');;
+                update.forEach(checkbox => {
+                    checkbox.addEventListener('click', (event) => {
+                        const id = event.target.getAttribute('data-id');
+                        const played = event.target.getAttribute('data-played');
+                        console.log(id, played)
+
+                        fetch(`/crd`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                id,
+                                played: 1
+                            })
+                        }).then(res => {
+                            if (res.ok) {
+                                return res.json();
+                            } else {
+                                throw new Error("Failed to update the data");
+                            }
+                        }).then(data => {
+                            console.log(data);
+                            alert("Data updated successfully!");
+                        }).catch(error => {
+                            console.error("There was a problem with the fetch operation:", error);
+                        });
+                    })
+                })
             })
+
+
     })
+
+
+
+
+
 
 </script>
 

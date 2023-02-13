@@ -11,7 +11,7 @@ const post_rd = async (req, res) => {
         const Domain = req.body.Domain;
         switch (Domain) {
             case "coding":
-                var Event = req.body.Event;
+                var Event = req.body.event;
                 if (Event === 'code-tyro') {
 
                     try {
@@ -43,7 +43,7 @@ const post_rd = async (req, res) => {
                 }
                 break;
             case "civil":
-                var Event = req.body.Event;
+                var Event = req.body.event;
                 if (Event === 'Setubandhan') {
                     try {
                         
