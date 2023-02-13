@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRD</title>
+    <!-- <script src="node_modules/jquery/dist/jquery.min.js"></script> -->
+</head>
+
+<body>
+    <div>
+        Enter event:
+        <select name="Event" id="inputType2">
+            <option value=" "> </option>
+            <option value="code-tyro">code-tyro</option>
+
+        </select>
+        <button id="fetch-button">Fetch Data</button>
+        <div id="data-container"></div>
+    </div>
+
+</body>
+<script>
+    const fieldSelect = document.getElementById('inputType2');
+    const fetchButton = document.getElementById('fetch-button');
+    const dataContainer = document.getElementById('data-container');
+    fetchButton.addEventListener('click', () => {
+        const field = fieldSelect.value;
+        console.log(field);
+        fetch(`http://localhost:3000/crd.html?Event=${field}`)
+            .then(res => res.json()).then(data => {
+                let dataHTML = ''
+                data.forEach(function (item) {
+                    dataHTML += `${item[field]}` 
+                    console.log(dataHTML)
+                });
+            })
+    })
+
+</script>
+
+</html>
