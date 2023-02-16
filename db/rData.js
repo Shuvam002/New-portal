@@ -1,24 +1,42 @@
 const mongoose = require('mongoose');
-const Counter = require('./rcounter');
+const CounterCoding = require('./codingcounter');
+const CounterCivil = require('./civilcounter');
+const CounterElectrical = require('./electricalcounter');
+const CounterGaming = require('./gamingcounter');
+const CounterRobotics = require('./roboticscounter');
 mongoose.connect('mongodb://localhost:27017/testing', { useNewUrlParser: true });
 const rdataSchema = new mongoose.Schema({_id:Number, played:{type:Number, default:0}}, { strict: false, timestamps:true, index:{unique:true}, _id:false });
 
-rdataSchema.pre("save",function(next){
+rdataSchema.pre('save', function (next) {
     let doc = this;
-    Counter.getSequenceNextValue("user_id").then(counter=>{
-        console.log("done",counter);
-        if(!counter){
-            Counter.insertCounter("user_id").then(counter=>{
-                doc._id=counter;
-                console.log(doc)
-                next();
-            }).catch(error=>next(error));
-        }else{
-            doc._id=counter;
-            next();
-        }
-    }).catch(error=>next(error));
-});
+    let counterModel;
+    if (doc.constructor.modelName === 'coding') {
+      counterModel = CounterCoding;
+    } else if (doc.constructor.modelName === 'civil') {
+      counterModel = CounterCivil;
+    } else if (doc.constructor.modelName === 'electrical') {
+      counterModel = CounterElectrical;
+    } else if (doc.constructor.modelName === 'robotics') {
+      counterModel = CounterRobotics;
+    } else if (doc.constructor.modelName === 'gaming') {
+      counterModel = CounterGaming;
+    }
+  
+    counterModel.findOneAndUpdate(
+      { _id: doc.constructor.modelName.toLowerCase() + '_id' },
+      { $inc: { sequence_value: 1 } },
+      { new: true, upsert: true }
+    )
+      .then(function (counter) {
+        doc._id = counter.sequence_value;
+        next();
+      })
+      .catch(function (error) {
+        next(error);
+      });
+  });
+  
+
 
 const coding = mongoose.model('coding', rdataSchema);
 const civil = mongoose.model('civil', rdataSchema);
