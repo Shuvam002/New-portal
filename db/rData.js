@@ -3,6 +3,7 @@ const CounterCoding = require('./codingcounter');
 const CounterCivil = require('./civilcounter');
 const CounterElectrical = require('./electricalcounter');
 const CounterGaming = require('./gamingcounter');
+const CounterGeneral = require('./generalcounter');
 const CounterRobotics = require('./roboticscounter');
 mongoose.connect('mongodb://localhost:27017/testing', { useNewUrlParser: true });
 const rdataSchema = new mongoose.Schema({_id:Number, played:{type:Number, default:0}}, { strict: false, timestamps:true, index:{unique:true}, _id:false });
@@ -20,6 +21,8 @@ rdataSchema.pre('save', function (next) {
       counterModel = CounterRobotics;
     } else if (doc.constructor.modelName === 'gaming') {
       counterModel = CounterGaming;
+    }else if (doc.constructor.modelName === 'general'){
+      counterModel = CounterGeneral;
     }
   
     counterModel.findOneAndUpdate(
@@ -43,4 +46,5 @@ const civil = mongoose.model('civil', rdataSchema);
 const electrical = mongoose.model('electrical', rdataSchema);
 const robotics = mongoose.model('robotics', rdataSchema);
 const gaming = mongoose.model('gaming', rdataSchema);
-module.exports = {coding,civil,electrical,robotics,gaming};
+const general = mongoose.model('general',rdataSchema);
+module.exports = {coding,civil,electrical,robotics,gaming,general};
